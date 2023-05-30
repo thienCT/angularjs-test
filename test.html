@@ -1,8 +1,97 @@
 <!DOCTYPE html>
 <html>
-<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
-<body>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular-route.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular-route.js"></script>
+<head>
+    <body>
+        <script>
+import { Pipe, PipeTransform } from '@angular/core';
+@Pipe({ name: 'appFilter' })
+export class FilterPipe implemant PipeTransform{
+  transform(items:any[], searchText: string): any[] {
+    if (!items) {
+      return [];
+    }
+    if (!searchText) {
+      return items;
+    }
+    searchText = searchText.toLocaleLowerCase();
+    return items.filter(it => {
+      return it.toLocaleLowerCase().includes(searchText);
+    });
+  }
+}
+import { BrowserModule } from '@angular/platform-browser';
+import { NgModule } from '@angular/core';
+import { FormsModule } from '@angular/forms';
 
+import { AppComponent } from './app.component';
 
-</body>
+import { FilterPipe } from './pipes/filter.pipe';
+@NgModule({
+  declarations: [
+    AppComponent,
+    FilterPipe
+  ],
+  imports: [
+    BrowserModule,
+    FormsModule
+  ],
+  bootstrap: [AppComponent]
+})
+export class AppModule { }
+
+        </script>
+        </body>
+        
+<div class="content" role="main">
+    <div class="card">
+      <div class="form-group">
+        <label for="search-text">Enter to text search</label>
+        <input type="email" class="form-control" id="search-text" aria-describedby="search-text" 
+          [(ngModel)]="searchText" placeholder="Enter text to search" 
+          autofocus>
+      </div>
+      <ul class="list-group list-group-flush">
+        <!-- results of ngFor is passed to appFilter with argument searchText -->
+        <li class="list-group-item" *ngFor="let c of characters | appFilter: searchText">
+          {{c}}
+        </li>
+      </ul>
+    </div>
+  </div>
+  <script>
+    import { Component } from '@angular/core';
+
+@Component({
+  selector: 'app-root',
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.scss']
+})
+export class AppComponent {
+  title = 'angular-text-search-highlight';
+  searchText = '';
+  characters = [
+   'ASP.NET MVC',
+   'Node.js',
+   'React.js',
+   'TypeScript',
+  ]
+}
+  </script>
+  <form>
+    <ejs-grid [dataSource]="data">
+        <e-columns>
+            <e-column field="OrderID" headerText="Order ID" textAlign="Right"     width="120"></e-column>
+            <e-column field="CustomerID" headerText="Customer Name" width="150"></e-column>
+            <e-column field="Freight" headerText="Freight" textAlign="Right" format="C2"  width="120"></e-column>
+            <e-column field="ShipCity" headerText="Ship City" width="150"></e-column>
+        </e-columns>
+    </ejs-grid>
+  </form>
+</head>
 </html>
